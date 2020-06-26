@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
+	"time"
 
 	"golang.org/x/text/encoding/japanese"
 	"golang.org/x/text/transform"
@@ -33,7 +35,7 @@ func main() {
 	defer infile.Close()
 
 	//書き込みファイル準備
-	outfile, err := os.Create("./test.csv")
+	outfile, err := os.Create("./医療法人社団松英会馬込中央診療所" + time.Now().Format("20060102") + ".txt")
 	failOnError(err)
 	defer outfile.Close()
 
@@ -51,6 +53,15 @@ func main() {
 			break
 		} else {
 			failOnError(err)
+		}
+
+		Eattime, _ := strconv.ParseFloat(record[83], 32)
+		if record[85] != "随時血糖" {
+			if (record[82] == "とった") && (Eattime < 10) {
+				record[84] = "" // 随時血糖なので、空腹時血糖の値を空欄にする
+			} else {
+				record[85] = "" // 空腹時血糖なので、随時血糖の値を空欄にする
+			}
 		}
 
 		drNamePos := len(record)
