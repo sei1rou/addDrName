@@ -35,14 +35,15 @@ func main() {
 	defer infile.Close()
 
 	//書き込みファイル準備
-	outfile, err := os.Create("./医療法人社団松英会馬込中央診療所" + time.Now().Format("20060102") + ".txt")
+	outfile, err := os.Create("./医療法人社団松英会馬込中央診療所" + time.Now().Format("20060102") + ".csv")
 	failOnError(err)
 	defer outfile.Close()
 
 	reader := csv.NewReader(transform.NewReader(infile, japanese.ShiftJIS.NewDecoder()))
 	reader.Comma = '\t'
 	writer := csv.NewWriter(transform.NewWriter(outfile, japanese.ShiftJIS.NewEncoder()))
-	writer.Comma = '\t'
+	// writer.Comma = '\t'
+	writer.Comma = ','
 	writer.UseCRLF = true
 
 	log.Print("Start\r\n")
